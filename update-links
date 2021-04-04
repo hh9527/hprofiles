@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-CTX=$(dirname "$0")
+CTX="$(cd "$(dirname "$0")" && pwd -P)"
+echo "context is $CTX"
 mkdir -p "$HOME/.cargo"
+mkdir -p "$HOME/.upup"
 ln -fs "$CTX/inject/cargo-config" "$HOME/.cargo/config"
 ln -fs "$CTX/inject/env" "$HOME/.upup/env"
-
