@@ -3,4 +3,5 @@
 CTX=$(dirname "$0")
 mkdir -p "$HOME/.cargo"
 ln -fs "$CTX/inject/cargo-config" "$HOME/.cargo/config"
+ln -fs "$CTX/inject/env" "$HOME/.upup/env"
 
