@@ -1,0 +1,62 @@
+INSTALLED="$HOME/.upup/installed"
+ACTIVATED="$HOME/.upup/activated"
+PKGS="$HOME/.upup/pkgs"
+PLAT=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCH=$(uname -m)
+
+select_arch() {
+    for i in $@; do
+        if [ "$i" == "$ARCH" ]; then
+            echo "$i"
+            break
+        elif [ "$i=$ARCH" == "x64=x86_64" ]; then
+            echo "$i"
+            break
+        fi
+    done
+}
+
+select_plat() {
+    for i in $@; do
+        if [ "$i" == "$PLAT" ]; then
+            echo "$i"
+            break
+        elif [ "$i=$PLAT" == "macos=darwin" ]; then
+            echo "$i"
+            break
+        fi
+    done
+}
+
+up_github_latest() {
+    local repo="$1"
+    curl -sk -L "https://api.github.com/repos/$repo/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
+}
+
+up_download() {
+    local pkg="$1"
+    local url="$2"
+    local fpath="$PKGS/$pkg"
+    if [ ! -f "$fpath" ]; then
+        local dir=$(dirname "$fpath")
+        echo "downloading $url"
+        local t=$(mktemp -t "dl-")
+        curl -sk -L "$url" > $t
+        mkdir -p "$dir" > /dev/null
+        mv "$t" "$fpath"
+    fi
+}
+
+up_ensure_path() {
+    local path="$1"
+    local dir=$(dirname "$path")
+    rm -rf "$path" > /dev/null
+    mkdir -p "$dir" > /dev/null
+}
+
+up_activate() {
+    local name="$1"
+    local ver="$2"
+    mkdir -p "$ACTIVATED" > /dev/null
+    ln -sf "$INSTALLED/$name/$ver" "$ACTIVATED/$name"
+}

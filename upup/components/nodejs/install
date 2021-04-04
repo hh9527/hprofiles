@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+CTX=$(dirname "$0")
+source "$CTX/../../support"
+
+install() {
+    local repo="nodejs/node"
+    local name="nodejs"
+    local ver=$(up_github_latest "$repo")
+    local pkg="$name/$ver.tar.gz"
+    local dir="$INSTALLED/$name/$ver"
+    local arch=$(select_arch "x64" "arm64")
+    local plat=$(select_plat "darwin" "linux")
+    local url="$NODE_MIRROR$ver/node-$ver-$plat-$arch.tar.gz"
+    if [ ! -d "$dir" ]; then
+        local t=$(mktemp -d -t "install-")
+        up_download "$pkg" "$url"
+        tar xfz "$PKGS/$pkg" -C "$t" --strip-components 1
+        up_ensure_path "$dir"
+        mv "$t" "$dir"
+    fi
+    up_activate "$name" "$ver"
+}
+
+install
