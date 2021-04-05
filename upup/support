@@ -42,6 +42,7 @@ up_download() {
         echo "downloading $url"
         local t=$(mktemp -t "dl-")
         curl -sk -L "$url" > $t
+        echo "moving to $fpath"
         mkdir -p "$dir" > /dev/null
         mv "$t" "$fpath"
     fi
@@ -58,5 +59,6 @@ up_activate() {
     local name="$1"
     local ver="$2"
     mkdir -p "$ACTIVATED" > /dev/null
+    # echo "ln -sf $INSTALLED/$name/$ver $ACTIVATED/$name"
     ln -sf "$INSTALLED/$name/$ver" "$ACTIVATED/$name"
 }

@@ -15,6 +15,7 @@ install() {
     if [ ! -d "$dir" ]; then
         local t=$(mktemp -d -t "install-")
         up_download "$pkg" "$url"
+        echo "extracting $PKGS/$pkg to $dir"
         tar xfz "$PKGS/$pkg" -C "$t" --strip-components 1
         up_ensure_path "$dir"
         mv "$t" "$dir"
